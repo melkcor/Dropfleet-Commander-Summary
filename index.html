@@ -28,6 +28,7 @@ main{padding:18px 28px 40px;position:relative;z-index:1}
 .tools input:focus{border-color:var(--cy);box-shadow:0 0 8px rgba(34,211,238,.35)}
 .legend{display:flex;gap:12px;font-size:13px;color:var(--mut);margin-left:auto}
 .legend i{display:inline-block;width:12px;height:12px;margin-right:5px;vertical-align:-1px;border:1px solid}
+.flt{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--mut);cursor:pointer;white-space:nowrap}
 .btn{background:transparent;border:1px solid var(--cy2);color:var(--cy);padding:7px 14px;font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:2px;cursor:pointer;text-transform:uppercase;text-decoration:none}
 .btn:hover{background:rgba(34,211,238,.12)}
 .wrap{overflow:auto;max-height:calc(100vh - var(--top) - 90px);border:1px solid var(--line);background:rgba(11,18,32,.85)}
@@ -114,6 +115,8 @@ body.mob nav button{font-size:10px;letter-spacing:1px;padding:9px 11px;white-spa
 body.mob .jump{padding:8px 12px;flex-wrap:nowrap;overflow-x:auto}
 body.mob .jump .btn{white-space:nowrap;font-size:10px;padding:7px 10px}
 body.mob main{padding:10px 10px 40px}
+body.mob #top{position:sticky;top:0;z-index:1000;backdrop-filter:none;background:#05090f}
+body.mob .flt{font-size:12px}
 body.mob .tools input{width:100%;font-size:16px}
 body.mob .tools .btn{flex:1}
 body.mob .legend{margin-left:0;width:100%;justify-content:space-between}
@@ -167,7 +170,7 @@ body.mob .qwrap{width:100%}
 <div class="jump"><a class="btn" href="#sec-orders">General Orders</a><a class="btn" href="#sec-crip">Crippling Effects</a><a class="btn" href="#sec-exp">Explosion Table</a><a class="btn" href="#sec-ds">Cities & Space Stations</a><a class="btn" href="#sec-ft">Features</a><a class="btn" href="#sec-core">Core Abilities</a><a class="btn" href="#sec-phr">PHR Abilities</a><a class="btn" href="#sec-adm">PHR Admirals</a></div>
 </div>
 <main>
-<div class="tab on" id="t1"><div class="tools"><span class="qwrap"><input id="q" placeholder="Filter ships, special rules or weapons…"><button id="qx" type="button" title="Clear search" aria-label="Clear search">&times;</button></span><button class="btn" id="clr">Clear selection</button>
+<div class="tab on" id="t1"><div class="tools"><span class="qwrap"><input id="q" placeholder="Filter ships, special rules or weapons…"><button id="qx" type="button" title="Clear search" aria-label="Clear search">&times;</button></span><button class="btn" id="clr">Clear selection</button><label class="flt"><input type="checkbox" id="fAdm" checked>Famous Admirals</label><label class="flt"><input type="checkbox" id="fCiv">Civilian ships</label>
 <div class="legend"><span><i style="background:rgba(248,113,113,.3);border-color:#ef4444"></i>Colossal</span><span><i style="background:rgba(251,191,36,.3);border-color:#f59e0b"></i>Heavy</span><span><i style="background:rgba(167,139,250,.3);border-color:#8b5cf6"></i>Medium</span><span><i style="background:rgba(52,211,153,.3);border-color:#10b981"></i>Light</span></div></div>
 <div class="wrap"><table class="st" id="tb1"></table></div><div id="m1"></div></div>
 <div class="tab" id="t2"><div id="t2w"></div></div>
@@ -185,6 +188,8 @@ let Q='';
 const esc=s=>(s??'').toString().replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const COLS=['','Ship','Points','Tonnage','Class','Thrust','Scan','Sig','Hull','ES','KS','BS','G','Special','Load / Drop'];
 const TN={'1':'Colossal (C)','2':'Heavy (H)','3':'Medium (M)','4':'Light (L)'};
+const ADM=new Set(['Javelin - Achilles','Helena of Asgard - Pompeius','Claudia Rhee - Heracles','Gaius Chau - Romulus']);
+const CIV=s=>!/(PHR Combined Fleet Stats)/.test(s.isrc||'');
 const ST=[['Thrust','thr'],['Scan','scan'],['Sig','sig'],['Hull','hull'],['ES','es'],['KS','ks'],['BS','bs'],['G','g']];
 const tn=t=>((t||'').trim()[0]||'');
 function hl(txt){const t=esc(txt);if(!Q)return t;const i=t.toLowerCase().indexOf(Q);return i<0?t:t.slice(0,i)+'<mark>'+t.slice(i,i+Q.length)+'</mark>'+t.slice(i+Q.length)}
@@ -208,16 +213,17 @@ function wcard(x){return `<div class="mw"><div class="wn">${rl(x.n,x.nk)}</div><
 function card(s,i,tab){
  const o=open[tab]===i,t=tn(s.ton);
  let h=`<div class="mc t${t} ${o?'open':''}" data-i="${i}" data-tab="${tab}"><div class="mh"><input type="checkbox" data-n="${esc(s.name)}" ${sel.has(s.name)?'checked':''}><span class="nm">${hl(s.name)}</span><span class="pts">${s.pts?esc(s.pts)+' pts':''}</span><span class="chev">&#9654;</span></div>
- <div class="msub">${s.ton?`<span class="ton c${t}">${esc(s.ton)}</span>`:''}<span>${hl(s.cls)}</span></div><div class="mst">${ST.map(([l,k])=>`<div><b>${l}</b><span>${esc(s[k])}</span></div>`).join('')}</div>`;
+ ${tab==='t1'?'':`<div class="msub">${s.ton?`<span class="ton c${t}">${esc(s.ton)}</span>`:''}<span>${hl(s.cls)}</span></div>`}<div class="mst">${ST.map(([l,k])=>`<div><b>${l}</b><span>${esc(s[k])}</span></div>`).join('')}</div>`;
  if(s.sp.length||s.load)h+=`<div class="msp">${s.sp.length?`<div><span class="lb">Special</span>${rls(s.sp)}</div>`:''}${s.load?`<div><span class="lb">Load / Drop</span>${hl(s.load)}</div>`:''}</div>`;
  if(o)h+=`<div class="mx"><h4>Weapon Systems</h4>${s.w.length?s.w.map(wcard).join(''):'<div class="none">No weapon profiles listed.</div>'}<h4 class="mih">Ship Image</h4>${imgbox(s)}</div>`;
  return h+'</div>'}
-function grouped(L,tab,mob){let h='',last=null;for(const[s,i]of L){const t=tn(s.ton);if(t!==last){h+=mob?`<div class="mgrp t${t}">${TN[t]||'Unspecified'}</div>`:`<tr class="grp t${t}"><td colspan="${COLS.length}">${TN[t]||'Unspecified'}</td></tr>`;last=t}h+=mob?card(s,i,tab):row(s,i,tab)}return h}
+function grouped(L,tab,mob){let h='',last=null;for(const[s,i]of L){const t=tn(s.ton);if(t!==last){if(!(mob&&tab==='t1'))h+=mob?`<div class="mgrp t${t}">${TN[t]||'Unspecified'}</div>`:`<tr class="grp t${t}"><td colspan="${COLS.length}">${TN[t]||'Unspecified'}</td></tr>`;last=t}h+=mob?card(s,i,tab):row(s,i,tab)}return h}
 function render1(){
- const L=SHIPS.map((s,i)=>[s,i]).filter(([s,i])=>!Q||HAY[i].includes(Q));
+ const fA=document.getElementById('fAdm').checked,fC=document.getElementById('fCiv').checked;
+ const L=SHIPS.map((s,i)=>[s,i]).filter(([s,i])=>((!Q||HAY[i].includes(Q))&&(fA||!ADM.has(s.name))&&(fC||!CIV(s))));
  if(mode==='mobile'){document.getElementById('m1').innerHTML=grouped(L,'t1',1)||'<div class="empty">NO MATCHING SHIPS</div>';document.getElementById('tb1').innerHTML=''}
  else{document.getElementById('tb1').innerHTML=head()+'<tbody>'+(grouped(L,'t1',0)||`<tr><td colspan="${COLS.length}" class="none">No matching ships.</td></tr>`)+'</tbody>';document.getElementById('m1').innerHTML=''}
- document.getElementById('c1').textContent=Q?L.length+'/'+SHIPS.length:SHIPS.length}
+ document.getElementById('c1').textContent=(Q||!fA||!fC)?L.length+'/'+SHIPS.length:L.length}
 function render2(){
  const L=SHIPS.map((s,i)=>[s,i]).filter(([s])=>sel.has(s.name));
  document.getElementById('c2').textContent=L.length;
@@ -244,7 +250,7 @@ document.addEventListener('click',e=>{
   if(open[t]===i){const el=document.querySelector(`#${t} .mc[data-i="${i}"]`);if(el)el.scrollIntoView({block:'start',behavior:'smooth'})}}
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('ov').classList.remove('on')});
-document.addEventListener('change',e=>{if(e.target.matches('input[type=checkbox]')){const n=e.target.dataset.n;e.target.checked?sel.add(n):sel.delete(n);save();all()}});
+document.addEventListener('change',e=>{if(!e.target.matches('input[type=checkbox]'))return;if(e.target.id==='fAdm'||e.target.id==='fCiv'){render1();return}const n=e.target.dataset.n;e.target.checked?sel.add(n):sel.delete(n);save();all()});
 const qi=document.getElementById('q'),qx=document.getElementById('qx');
 qi.addEventListener('input',e=>{Q=e.target.value.trim().toLowerCase();qx.classList.toggle('on',!!qi.value);render1()});
 qx.addEventListener('click',()=>{qi.value='';Q='';qx.classList.remove('on');render1();qi.focus()});
