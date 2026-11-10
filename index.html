@@ -114,9 +114,10 @@ body.mob nav{padding:8px 12px 0;overflow-x:auto;gap:4px}
 body.mob nav button{font-size:10px;letter-spacing:1px;padding:9px 11px;white-space:nowrap;flex:1 0 auto}
 body.mob .jump{padding:8px 12px;flex-wrap:nowrap;overflow-x:auto}
 body.mob .jump .btn{white-space:nowrap;font-size:10px;padding:7px 10px}
-body.mob main{padding:10px 10px 40px}
-body.mob #top{position:sticky;top:0;z-index:1000;backdrop-filter:none;background:#05090f}
+body.mob main{padding:calc(var(--top) + 10px) 10px 40px}
+body.mob #top{position:fixed;top:0;left:0;right:0;z-index:1000;background:#05090f}
 body.mob .flt{font-size:12px}
+body.mob #t1 .legend{display:none}
 body.mob .tools input{width:100%;font-size:16px}
 body.mob .tools .btn{flex:1}
 body.mob .legend{margin-left:0;width:100%;justify-content:space-between}
@@ -217,7 +218,7 @@ function card(s,i,tab){
  if(s.sp.length||s.load)h+=`<div class="msp">${s.sp.length?`<div><span class="lb">Special</span>${rls(s.sp)}</div>`:''}${s.load?`<div><span class="lb">Load / Drop</span>${hl(s.load)}</div>`:''}</div>`;
  if(o)h+=`<div class="mx"><h4>Weapon Systems</h4>${s.w.length?s.w.map(wcard).join(''):'<div class="none">No weapon profiles listed.</div>'}<h4 class="mih">Ship Image</h4>${imgbox(s)}</div>`;
  return h+'</div>'}
-function grouped(L,tab,mob){let h='',last=null;for(const[s,i]of L){const t=tn(s.ton);if(t!==last){if(!(mob&&tab==='t1'))h+=mob?`<div class="mgrp t${t}">${TN[t]||'Unspecified'}</div>`:`<tr class="grp t${t}"><td colspan="${COLS.length}">${TN[t]||'Unspecified'}</td></tr>`;last=t}h+=mob?card(s,i,tab):row(s,i,tab)}return h}
+function grouped(L,tab,mob){let h='',last=null;for(const[s,i]of L){const t=tn(s.ton);if(t!==last){h+=mob?`<div class="mgrp t${t}">${TN[t]||'Unspecified'}</div>`:`<tr class="grp t${t}"><td colspan="${COLS.length}">${TN[t]||'Unspecified'}</td></tr>`;last=t}h+=mob?card(s,i,tab):row(s,i,tab)}return h}
 function render1(){
  const fA=document.getElementById('fAdm').checked,fC=document.getElementById('fCiv').checked;
  const L=SHIPS.map((s,i)=>[s,i]).filter(([s,i])=>((!Q||HAY[i].includes(Q))&&(fA||!ADM.has(s.name))&&(fC||!CIV(s))));
