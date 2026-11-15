@@ -111,7 +111,8 @@ body.mob #t1 .wrap{display:none}
 body.mob #m1{display:block}
 body.mob header{padding:10px 12px 0}
 body.mob h1{font-size:16px;letter-spacing:3px}
-body.mob header .tag, body.mob #stamp{display:none}
+body.mob header .tag{display:none}
+body.mob #stamp{display:block;font-size:9px}
 body.mob nav{padding:8px 12px 0;overflow-x:auto;gap:4px}
 body.mob nav button{font-size:10px;letter-spacing:1px;padding:9px 11px;white-space:nowrap;flex:1 0 auto}
 body.mob .jump{padding:8px 12px;flex-wrap:nowrap;overflow-x:auto}
@@ -260,6 +261,6 @@ const qi=document.getElementById('q'),qx=document.getElementById('qx');
 qi.addEventListener('input',e=>{Q=e.target.value.trim().toLowerCase();qx.classList.toggle('on',!!qi.value);render1()});
 qx.addEventListener('click',()=>{qi.value='';Q='';qx.classList.remove('on');render1();qi.focus()});
 window.addEventListener('resize',setTop);
-document.getElementById('stamp').textContent=SHIPS.length+' profiles loaded';
+document.getElementById('stamp').textContent=SHIPS.length+' profiles · v5.1';
 applyMode();
 </script></body></html>
