@@ -42,9 +42,11 @@ tr.row.t1{background:rgba(248,113,113,.075)} tr.row.t1 td:first-child{box-shadow
 tr.row.t2{background:rgba(251,191,36,.06)}  tr.row.t2 td:first-child{box-shadow:inset 4px 0 0 #f59e0b}
 tr.row.t3{background:rgba(167,139,250,.075)} tr.row.t3 td:first-child{box-shadow:inset 4px 0 0 #8b5cf6}
 tr.row.t4{background:rgba(52,211,153,.055)} tr.row.t4 td:first-child{box-shadow:inset 4px 0 0 #10b981}
+tr.row.tA{background:rgba(240,171,252,.07)} tr.row.tA td:first-child{box-shadow:inset 4px 0 0 #d946ef}
 tr.grp td{font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:3px;text-align:left!important;padding:6px 12px!important;text-transform:uppercase}
 tr.grp.t1 td,.mgrp.t1{background:rgba(127,29,29,.45);color:#fca5a5}tr.grp.t2 td,.mgrp.t2{background:rgba(120,53,15,.45);color:#fcd34d}
 tr.grp.t3 td,.mgrp.t3{background:rgba(76,29,149,.45);color:#c4b5fd}tr.grp.t4 td,.mgrp.t4{background:rgba(6,95,70,.45);color:#6ee7b7}
+tr.grp.tA td,.mgrp.tA{background:rgba(134,25,143,.45);color:#f0abfc}
 tr.row{cursor:pointer}
 tr.row:hover{filter:brightness(1.35)}
 tr.row.open{outline:1px solid var(--cy);outline-offset:-1px}
@@ -135,6 +137,7 @@ body.mob #pop{width:96vw;max-height:85vh;padding:16px}
 .mc.t2{background:rgba(251,191,36,.06);border-left:4px solid #f59e0b}
 .mc.t3{background:rgba(167,139,250,.075);border-left:4px solid #8b5cf6}
 .mc.t4{background:rgba(52,211,153,.055);border-left:4px solid #10b981}
+.mc.tA{background:rgba(240,171,252,.07);border-left:4px solid #d946ef}
 .mc.open{outline:1px solid var(--cy)}
 .mh{display:flex;align-items:center;gap:10px;padding:11px 12px;cursor:pointer}
 .mh input[type=checkbox]{width:24px;height:24px;flex:none}
@@ -172,8 +175,8 @@ body.mob .qwrap{width:100%}
 .amt{width:38px;text-align:center;background:#020617;border:1px solid var(--line);color:#fff;border-radius:6px;padding:3px 2px;font-size:13px}
 .row,.mc{position:relative}
 .dead{filter:grayscale(1) opacity(.55)}
-@keyframes boom{0%{transform:scale(1.06);filter:brightness(2.4) saturate(5) hue-rotate(-50deg)}35%{filter:brightness(1.9) saturate(2.5) hue-rotate(150deg)}70%{filter:brightness(1.15) grayscale(.7)}100%{transform:scale(1);filter:grayscale(1)}}
-.boom{animation:boom .45s forwards}
+@keyframes boom{0%{transform:scale(1.07);filter:brightness(2.8) saturate(7) hue-rotate(-60deg)}45%{filter:brightness(2.2) saturate(5) hue-rotate(-35deg)}70%{filter:brightness(1.7) saturate(2) hue-rotate(140deg)}100%{transform:scale(1);filter:grayscale(1)}}
+.boom{animation:boom .5s forwards}
 @keyframes flash{0%{background:rgba(34,211,238,.28)}100%{background:transparent}}
 .flash{animation:flash .45s}
 #pts.warn{color:#f87171;text-shadow:0 0 12px #f87171;cursor:pointer}
@@ -202,7 +205,7 @@ body.mob #pts{font-size:13px;margin-right:6px}
 </div>
 <main>
 <div class="tab on" id="t1"><div class="tools"><span class="qwrap"><input id="q" placeholder="Filter ships, special rules or weapons…"><button id="qx" type="button" title="Clear search" aria-label="Clear search">&times;</button></span><button class="btn" id="clr">Clear selection</button><label class="flt"><input type="checkbox" id="fAdm" checked>Famous Admirals</label><label class="flt"><input type="checkbox" id="fCiv">Civilian ships</label>
-<div class="legend"><span><i style="background:rgba(248,113,113,.3);border-color:#ef4444"></i>Colossal</span><span><i style="background:rgba(251,191,36,.3);border-color:#f59e0b"></i>Heavy</span><span><i style="background:rgba(167,139,250,.3);border-color:#8b5cf6"></i>Medium</span><span><i style="background:rgba(52,211,153,.3);border-color:#10b981"></i>Light</span></div></div>
+<div class="legend"><span><i style="background:rgba(248,113,113,.3);border-color:#ef4444"></i>Colossal</span><span><i style="background:rgba(251,191,36,.3);border-color:#f59e0b"></i>Heavy</span><span><i style="background:rgba(167,139,250,.3);border-color:#8b5cf6"></i>Medium</span><span><i style="background:rgba(52,211,153,.3);border-color:#10b981"></i>Light</span><span><i style="background:rgba(240,171,252,.3);border-color:#d946ef"></i>Admiral</span></div></div>
 <div class="wrap"><table class="st" id="tb1"></table></div><div id="m1"></div></div>
 <div class="tab" id="t2"><div id="t2w"></div></div>
 <div class="tab" id="t4"><div class="tools"><input id="fname" placeholder="Fleet list name…"><button class="btn" id="fsave">Save current fleet</button><span class="cnt" id="c4"></span></div><div id="flist"></div></div>
@@ -226,7 +229,8 @@ const open={t1:null,t2:null};
 let Q='';
 const esc=s=>(s??'').toString().replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const COLS=['','Ship','Points','Class','Thrust','Scan','Sig','Hull','ES','KS','BS','G','Special','Load / Drop'];
-const TN={'1':'Colossal (C)','2':'Heavy (H)','3':'Medium (M)','4':'Light (L)'};
+const TN={'A':'Admirals','1':'Colossal (C)','2':'Heavy (H)','3':'Medium (M)','4':'Light (L)'};
+const gkey=s=>(s.cls==='Admiral')?'A':tn(s.ton);
 const ADM=new Set(['Javelin - Achilles','Helena of Asgard - Pompeius','Claudia Rhee - Heracles','Gaius Chau - Romulus','PHR Vizier (Admiral)','PHR Vice Director (Admiral)']);
 const CIV=s=>!/(PHR Combined Fleet Stats)/.test(s.isrc||'');
 const ST=[['T','thr','Thrust'],['Sc','scan','Scan'],['Sg','sig','Sig'],['H','hull','Hull'],['ES','es','ES'],['KS','ks','KS'],['BS','bs','BS'],['G','g','G']];
@@ -243,7 +247,7 @@ function wtable(s){return s.w.length?`<table class="wt"><thead><tr><th>Weapon</t
   :'<div class="none">No weapon profiles listed.</div>'}
 const imgbox=s=>`<div class="img">${s.img?`<img src="${s.img}" alt="${esc(s.name)}"><div class="cap">Source: ${esc(s.isrc)}</div>`:`<div class="cap">No image in source PDFs</div>`}</div>`;
 function row(s,i,tab){
-  const o=open[tab]===i,t=tn(s.ton);
+  const o=open[tab]===i,t=gkey(s);
   return `<tr class="row t${t} ${o?'open':''}" data-i="${i}" data-tab="${tab}">
   <td class="ctl"><button class="pl" data-i="${i}" title="Add group">+</button><input class="amt" data-i="${i}" value="${shipTotal(s.name)}" inputmode="numeric" readonly><button class="mi" data-i="${i}" title="Remove group">&minus;</button></td>
   <td class="l nm">${hl(s.name)}</td><td>${esc(s.pts)}</td><td>${hl(s.cls)}</td>
@@ -251,22 +255,22 @@ function row(s,i,tab){
   <td class="spc">${rls(s.sp)}</td><td class="spc">${hl(s.load)}</td></tr>`+(o?`<tr class="exp"><td colspan="${COLS.length}"><div class="xp"><div><h4>Weapon Systems</h4>${wtable(s)}${s.load?`<div class="ld"><b>Load / Drop:</b> ${esc(s.load)}</div>`:''}</div><div><h4>Ship Image</h4>${imgbox(s)}</div></div></td></tr>`:'')}
 function wcard(x){return `<div class="mw"><div class="wn">${rl(x.n,x.nk)}</div><div class="wp">`+[['Arc',x.a],['Att',x.at],['Lock',x.l],['Dmg',x.d]].map(([k,v])=>`<span><i>${k}</i>${esc(v)}</span>`).join('')+`<span><i>Type</i>${x.t?`<span class="dt d${esc(x.t)}">${esc(x.t)}</span>`:''}</span></div>`+(x.sp.length?`<div class="ws">${rls(x.sp)}</div>`:'')+'</div>'}
 function card(s,i,tab){
-  const o=open[tab]===i,t=tn(s.ton);
+  const o=open[tab]===i,t=gkey(s);
   let h=`<div class="mc t${t} ${o?'open':''}" data-i="${i}" data-tab="${tab}"><div class="mh"><span class="ctl"><button class="pl" data-i="${i}">+</button><input class="amt" data-i="${i}" value="${shipTotal(s.name)}" inputmode="numeric" readonly><button class="mi" data-i="${i}">&minus;</button></span><span class="nm">${hl(s.name)}</span><span class="pts">${s.pts?esc(s.pts)+' pts':''}</span><span class="chev">&#9654;</span></div>
   <div class="mst">${ST.map(([l,k,f])=>`<div><b title="${f}">${l}</b><span>${fmt(k,s[k])}</span></div>`).join('')}</div>`;
   if(s.sp.length||s.load)h+=`<div class="msp">${s.sp.length?`<div><span class="lb">Special</span>${rls(s.sp)}</div>`:''}${s.load?`<div><span class="lb">Load / Drop</span>${hl(s.load)}</div>`:''}</div>`;
   if(o)h+=`<div class="mx"><h4>Weapon Systems</h4>${s.w.length?s.w.map(wcard).join(''):'<div class="none">No weapon profiles listed.</div>'}<h4 class="mih">Ship Image</h4>${imgbox(s)}</div>`;
   return h+'</div>'}
-function grouped(L,tab,mob){let h='',last=null;for(const[s,i]of L){const t=tn(s.ton);if(t!==last){h+=mob?`<div class="mgrp t${t}">${TN[t]||'Unspecified'}</div>`:`<tr class="grp t${t}"><td colspan="${COLS.length}">${TN[t]||'Unspecified'}</td></tr>`;last=t}h+=mob?card(s,i,tab):row(s,i,tab)}return h}
+function grouped(L,tab,mob){let h='',last=null;for(const[s,i]of L){const t=gkey(s);if(t!==last){h+=mob?`<div class="mgrp t${t}">${TN[t]||'Unspecified'}</div>`:`<tr class="grp t${t}"><td colspan="${COLS.length}">${TN[t]||'Unspecified'}</td></tr>`;last=t}h+=mob?card(s,i,tab):row(s,i,tab)}return h}
 function render1(){
  const fA=document.getElementById('fAdm').checked,fC=document.getElementById('fCiv').checked;
  const L=SHIPS.map((s,i)=>[s,i]).filter(([s,i])=>((!Q||HAY[i].includes(Q))&&(fA||!ADM.has(s.name))&&(fC||!CIV(s))));
  if(mode==='mobile'){document.getElementById('m1').innerHTML=grouped(L,'t1',1)||'<div class="empty">NO MATCHING SHIPS</div>';document.getElementById('tb1').innerHTML=''}
  else{document.getElementById('tb1').innerHTML=head()+'<tbody>'+(grouped(L,'t1',0)||`<tr><td colspan="${COLS.length}" class="none">No matching ships.</td></tr>`)+'</tbody>';document.getElementById('m1').innerHTML=''}
  document.getElementById('c1').textContent=(Q||!fA||!fC)?L.length+'/'+SHIPS.length:L.length}
-function row2(g,gi){const i=BY[g.n],s=SHIPS[i],t=tn(s.ton),o=open.t2===gi;
+function row2(g,gi){const i=BY[g.n],s=SHIPS[i],t=gkey(s),o=open.t2===gi;
  return `<tr class="row t${t} ${g.dead?'dead':''} ${o?'open':''}" data-i="${gi}" data-tab="t2"><td class="ctl"><button class="rm" data-g="${gi}" title="Remove group">&minus;</button><button class="dbtn${g.dead?' on':''}" data-g="${gi}" title="Destroyed / revive">&#9760;</button></td><td class="l nm">${hl(s.name)}<span class="grpnm">&times;${g.c}</span></td><td>${gpts(g)}</td><td>${hl(s.cls)}</td>${ST.map(([l,k])=>`<td>${fmt(k,s[k])}</td>`).join('')}<td class="spc">${rls(s.sp)}</td><td class="spc">${hl(s.load)}</td></tr>`+(o?`<tr class="exp"><td colspan="${COLS.length}"><div class="xp"><div><h4>Weapon Systems</h4>${wtable(s)}${s.load?`<div class="ld"><b>Load / Drop:</b> ${esc(s.load)}</div>`:''}</div><div><h4>Ship Image</h4>${imgbox(s)}</div></div></td></tr>`:'')}
-function card2(g,gi){const i=BY[g.n],s=SHIPS[i],t=tn(s.ton),o=open.t2===gi;
+function card2(g,gi){const i=BY[g.n],s=SHIPS[i],t=gkey(s),o=open.t2===gi;
  let h=`<div class="mc t${t} ${g.dead?'dead':''} ${o?'open':''}" data-i="${gi}" data-tab="t2"><div class="mh"><span class="ctl"><button class="rm" data-g="${gi}">&minus;</button><button class="dbtn${g.dead?' on':''}" data-g="${gi}">&#9760;</button></span><span class="nm">${hl(s.name)}<span class="grpnm">&times;${g.c}</span></span><span class="pts">${gpts(g)} pts</span><span class="chev">&#9654;</span></div> <div class="mst">${ST.map(([l,k,f])=>`<div><b title="${f}">${l}</b><span>${fmt(k,s[k])}</span></div>`).join('')}</div>`;
  if(s.sp.length||s.load)h+=`<div class="msp">${s.sp.length?`<div><span class="lb">Special</span>${rls(s.sp)}</div>`:''}${s.load?`<div><span class="lb">Load / Drop</span>${hl(s.load)}</div>`:''}</div>`;
  if(o)h+=`<div class="mx"><h4>Weapon Systems</h4>${s.w.length?s.w.map(wcard).join(''):'<div class="none">No weapon profiles listed.</div>'}<h4 class="mih">Ship Image</h4>${imgbox(s)}</div>`;
@@ -298,9 +302,11 @@ document.addEventListener('click',e=>{
  if(e.target.matches('input'))return;
  if(e.target.id==='clr'){groups=[];save();all();return}
  const pl=e.target.closest('.pl');
- if(pl){const i=+pl.dataset.i,s=SHIPS[i],vals=gvals(s);addGroup(s.name,vals[vals.length-1]);const el=document.querySelector(`#t2 [data-i="${groups.length-1}"]`);if(el)el.classList.add('flash');return}
+ if(pl){const i=+pl.dataset.i,s=SHIPS[i],vals=gvals(s);showPop(`<h3>${esc(s.name)}</h3><p class="src">Add a group &mdash; group size G&nbsp;=&nbsp;${esc(s.g||'?')} (${vals.join(' / ')})</p><div class="pick">${vals.map(x=>`<button class="btn" data-add="${i}" data-n="${x}">${x}</button>`).join('')}</div>`);return}
  const mi=e.target.closest('.mi');
- if(mi){decShip(+mi.dataset.i);return}
+ if(mi){const i=+mi.dataset.i,s=SHIPS[i],mine=groups.map((g,gi)=>({g,gi})).filter(x=>x.g.n===s.name);showPop(`<h3>${esc(s.name)}</h3><p class="src">Groups of this ship in the fleet: ${mine.length}</p>`+(mine.length?mine.map(x=>`<div class="fl"><span>Group &times;${x.g.c}</span><span class="sp"></span><button class="btn" data-delg="${x.gi}">Delete</button></div>`).join(''):'<p>No groups yet &mdash; use + to add one.</p>'));return}
+ const ad=e.target.closest('[data-add]');if(ad){addGroup(SHIPS[+ad.dataset.add].name,+ad.dataset.n);const el=document.querySelector(`#t2 [data-i="${groups.length-1}"]`);if(el)el.classList.add('flash');document.getElementById('ov').classList.remove('on');return}
+ const dg=e.target.closest('[data-delg]');if(dg){delGroup(+dg.dataset.delg);document.getElementById('ov').classList.remove('on');return}
  const rm=e.target.closest('.rm');if(rm){delGroup(+rm.dataset.g);return}
  const db=e.target.closest('.dbtn');
  if(db){const gi=+db.dataset.g,g=groups[gi];if(!g)return;g.dead=!g.dead;save();all();if(g.dead){const el=document.querySelector(`#t2 [data-i="${gi}"]`);if(el){el.classList.add('boom');setTimeout(()=>el.classList.remove('boom'),500)}}return}
